@@ -65,7 +65,7 @@ async def delete_book(book_id: int) -> None:
 @router.get("/{book_id}", response_model=Book, status_code=status.HTTP_200_OK)
 async def get_book_by_id(book_id: int) -> Book: #gets value from the Book 'struct'(definition in Go) in the db.schemas.py file
     #the 'async' keyword allows for concurrency in this function.'await' ensures that the function waits for the response before proceeding
-    book = await db.get_book(book_id)
+    book = db.get_book(book_id)
     if book is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book does not exist")
     return book
