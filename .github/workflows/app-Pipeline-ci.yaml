@@ -1,7 +1,9 @@
 name: Python Application- CI Pipeline
 
 on:
-  [workflow_dispatch]
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
