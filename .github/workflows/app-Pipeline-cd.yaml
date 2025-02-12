@@ -44,11 +44,6 @@ jobs:
           EOF
 
           ssh $USER@$SERVER_IP "sudo systemctl status docker"  
-      - name: Docker login
-        run: |
-          ssh $USER@$SERVER_IP << 'EOF'
-            echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
-          EOF
 
       - name: Check whether repo is present
         run: |
