@@ -63,9 +63,9 @@ jobs:
         run: |
           ssh $USER@$SERVER_IP << 'EOF'
             cd /home/$USER/fastapi-book-project
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker stop fastapi-app || true
-            docker rm fastapi-app || true
-            docker build -t fastapi-app .
-            docker run -d --name fastapi-app -p 8000:8000 fastapi-app
+            sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            sudo docker stop fastapi-app || true
+            sudo docker rm fastapi-app || true
+            sudo docker build -t fastapi-app .
+            sudo docker run -d --name fastapi-app -p 8000:8000 fastapi-app
           EOF
