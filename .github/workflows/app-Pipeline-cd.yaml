@@ -47,16 +47,14 @@ jobs:
 
       - name: Check whether repo is present
         run: |
-          ssh $USER@$SERVER_IP << 'EOF'
             if [ -d "/home/$USER/fastapi-book-project" ]; then
               echo "Repo is present"
             else
               echo "Repo is not present"
                 git clone https://github.com/Muturi-002/fastapi-book-project.git /home/$USER/fastapi-book-project
             fi
-          EOF
-          cd /home/$USER/fastapi-book-project
-          git init && git pull origin main  
+            cd /home/$USER/fastapi-book-project
+            git init && git pull origin main  
           
       - name: Deploy With Docker 
         run: |
