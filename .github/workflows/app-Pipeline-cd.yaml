@@ -19,12 +19,10 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-      
-      - name: Restart SSH agent
+          
+      - name: Restart SSH server
         run: |
-          ssh -o StrictHostKeyChecking=no $USER@$SERVER_IP << 'EOF'
-            sudo reboot
-          EOF
+          ssh -o StrictHostKeyChecking=no $USER@$SERVER_IP
 
       - name: Install Docker
         run: |
