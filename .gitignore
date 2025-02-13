@@ -163,3 +163,4 @@ cython_debug/
 
 #instance access
 ssh*
+*key*
