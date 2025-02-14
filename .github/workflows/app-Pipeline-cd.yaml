@@ -8,13 +8,12 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    container:
-      image: muturi02/fastapi-app:latest
-    
     env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SERVER_IP: ${{ secrets.SSH_HOST }}
           USER: ${{ secrets.SSH_USERNAME }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
 
     steps:
       - name: Get SSH key and set permissions
@@ -22,13 +21,10 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa $SERVER_IP >> ~/.ssh/known_hosts
-      
-      - name: Restart SSH agent
+          
+      - name: Restart SSH server
         run: |
-          ssh -o StrictHostKeyChecking=no $USER@$SERVER_IP << 'EOF'
-            sudo reboot
-          EOF
+          ssh -o StrictHostKeyChecking=no $USER@$SERVER_IP
 
       - name: Install Docker
         run: |
@@ -50,11 +46,6 @@ jobs:
           EOF
 
           ssh $USER@$SERVER_IP "sudo systemctl status docker"  
-      - name: Docker login
-        run: |
-          ssh $USER@$SERVER_IP << 'EOF'
-            echo "$DOCKER_TOKEN" | docker login --username $DOCKER_USERNAME --password-stdin
-          EOF
 
       - name: Check whether repo is present
         run: |
@@ -65,14 +56,17 @@ jobs:
               echo "Repo is not present"
                 git clone https://github.com/Muturi-002/fastapi-book-project.git /home/$USER/fastapi-book-project
             fi
+            cd /home/$USER/fastapi-book-project
+            git init && git pull origin main  
           EOF
-          cd /home/$USER/fastapi-book-project
-          git init && git pull origin main  
+          
           
       - name: Deploy With Docker 
         run: |
           ssh $USER@$SERVER_IP << 'EOF'
             cd /home/$USER/fastapi-book-project
+            sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            
             CONTAINER_ID=$(docker ps -q --filter "name=fastapi-app")
             if [ -n "$CONTAINER_ID" ]; then
               docker stop $CONTAINER_ID
