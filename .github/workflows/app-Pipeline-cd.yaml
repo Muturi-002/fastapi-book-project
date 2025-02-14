@@ -65,13 +65,8 @@ jobs:
         run: |
           ssh $USER@$SERVER_IP << 'EOF'
             cd /home/$USER/fastapi-book-project
-<<<<<<< HEAD
             sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            sudo docker stop fastapi-app || true
-            sudo docker rm fastapi-app || true
-            sudo docker build -t fastapi-app .
-            sudo docker run -d --name fastapi-app -p 8000:8000 fastapi-app
-=======
+            
             CONTAINER_ID=$(docker ps -q --filter "name=fastapi-app")
             if [ -n "$CONTAINER_ID" ]; then
               docker stop $CONTAINER_ID
@@ -79,5 +74,4 @@ jobs:
             fi
             docker build -t fastapi-app .
             docker run fastapi-app -p 8000:8000 fastapi-app
->>>>>>> 28e789c (Updated cd pipeline)
           EOF
