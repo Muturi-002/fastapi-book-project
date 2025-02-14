@@ -37,7 +37,6 @@ jobs:
             then
               sudo apt-get update
               sudo apt-get install -y docker.io
-              sudo usermod -aG docker $USER
               sudo systemctl start docker
               sudo systemctl enable docker
             else
@@ -45,6 +44,9 @@ jobs:
               sudo systemctl start docker
               sudo systemctl enable docker
             fi
+              sudo groupadd docker
+              sudo usermod -aG docker $USER
+              newgrp docker
           EOF
 
           ssh $USER@$SERVER_IP "sudo systemctl status docker"  
@@ -71,8 +73,11 @@ jobs:
         run: |
           ssh $USER@$SERVER_IP << 'EOF'
             cd /home/$USER/fastapi-book-project
-            docker stop fastapi-app || true
-            docker rm fastapi-app || true
+            CONTAINER_ID=$(docker ps -q --filter "name=fastapi-app")
+            if [ -n "$CONTAINER_ID" ]; then
+              docker stop $CONTAINER_ID
+              docker rm $CONTAINER_ID
+            fi
             docker build -t fastapi-app .
-            docker run -d --name fastapi-app -p 8000:8000 fastapi-app
+            docker run fastapi-app -p 8000:8000 fastapi-app
           EOF
