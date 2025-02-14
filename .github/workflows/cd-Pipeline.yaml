@@ -73,5 +73,5 @@ jobs:
               docker rm $CONTAINER_ID
             fi
             docker build -t fastapi-app .
-            docker run -d -p 8000:8000 fastapi-app
+            docker run --name fastapi-app -d -p 8000:8000 fastapi-app
           EOF
