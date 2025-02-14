@@ -67,5 +67,5 @@ async def get_book_by_id(book_id: int) -> Book: #gets value from the Book 'struc
     #the 'async' keyword allows for concurrency in this function.'await' ensures that the function waits for the response before proceeding
     book = db.get_book(book_id)
     if book is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book does not exist. This is a test.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book does not exist.")
     return book
